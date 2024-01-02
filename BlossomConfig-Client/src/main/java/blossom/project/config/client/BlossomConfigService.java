@@ -5,8 +5,7 @@ import blossom.project.config.common.constants.BlossomConstants;
 import blossom.project.config.common.entity.Result;
 import blossom.project.config.common.enums.EventTypeEnum;
 import blossom.project.config.common.exception.BlossomException;
-import blossom.project.config.common.utils.HttpUtils;
-import blossom.project.config.common.utils.MD5Util;
+import blossom.project.config.common.utils.*;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import static blossom.project.config.common.constants.BlossomConfigPropertiesKeyConstants.*;
 import static blossom.project.config.common.constants.BlossomConstants.SEPARATOR;
 
+import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -21,6 +21,8 @@ import java.net.http.HttpResponse;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 /**
  * @author: ZhangBlossom
@@ -44,6 +46,10 @@ public class BlossomConfigService implements ConfigService {
 
     private final ConcurrentHashMap<String, ConfigCache> cacheMap = new ConcurrentHashMap<>();
 
+    //可以考虑用AtomicReference
+    //private final ConcurrentHashMap<String, AtomicReference<ConfigCache>> cacheMap = new ConcurrentHashMap<>();
+
+
     public BlossomConfigService(Properties properties) {
         this.properties = properties;
         initNamespace();
@@ -53,31 +59,6 @@ public class BlossomConfigService implements ConfigService {
         this.namespace = (String) this.properties.get(NAMESPACE);
     }
 
-    /**
-     * 查询配置
-     *
-     * @param configId
-     * @param group
-     * @param fileExtension
-     * @return
-     * @throws BlossomException
-     */
-    @Override
-    public String getConfig(String configId, String group, String fileExtension) throws BlossomException {
-        String url = buildGetConfigUrl(group, configId); // 构建URL
-        try {
-            //获取配置的同时存储一下Cache
-            String content = HttpUtils.sendGetRequest(url);
-            String key = namespace + SEPARATOR + group + SEPARATOR + configId;
-            ConfigCache cache =
-                    ConfigCache.builder().content(content).key(key).lastCallMd5(MD5Util.toMD5(content))
-                            .type(fileExtension).modifyTimestamp(new Date()).build();
-            cacheMap.put(key, cache);
-            return content;
-        } catch (Exception e) {
-            throw new BlossomException(BlossomException.GET_CONFIG_ERROR, "Failed to get config", e);
-        }
-    }
 
     @Override
     public boolean publishConfig(String configId, String group, String content) throws BlossomException {
@@ -97,6 +78,60 @@ public class BlossomConfigService implements ConfigService {
         } catch (Exception e) {
             throw new BlossomException(BlossomException.REMOVE_CONFIG_ERROR, "Failed to remove config", e);
         }
+    }
+
+    /**
+     * 查询配置
+     *
+     * @param configId
+     * @param group
+     * @param fileExtension
+     * @return
+     * @throws BlossomException
+     */
+    @Override
+    public String getConfig(String configId, String group, String fileExtension) throws BlossomException {
+        final String key = namespace + SEPARATOR + group + SEPARATOR + configId;
+
+        // 尝试从本地文件读取配置
+        String content = ReadWriteLockUtil.withReadLock(key, () -> {
+            try {
+                return FileUtil.readConfigFromFile(key);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // 如果本地没有配置或读取失败，则从配置中心获取
+        if (StringUtils.isBlank(content)) {
+            String url = buildGetConfigUrl(group, configId); // 构建URL
+            try {
+                content = HttpUtils.sendGetRequest(url);
+                // 更新缓存
+                ConfigCache cache = ConfigCache.builder()
+                        .content(content)
+                        .key(key)
+                        .lastCallMd5(MD5Util.toMD5(content))
+                        .type(fileExtension)
+                        .modifyTimestamp(new Date())
+                        .build();
+                cacheMap.put(key, cache);
+
+                // 将配置信息写入到本地文件
+                String finalContent = content;
+                ReadWriteLockUtil.withWriteLock(key, id -> {
+                    try {
+                        FileUtil.writeConfigToFile(key, finalContent);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to write config to file for key: " + key, e);
+                    }
+                });
+            } catch (Exception e) {
+                throw new BlossomException(BlossomException.GET_CONFIG_ERROR, "Failed to get config", e);
+            }
+        }
+
+        return content;
     }
 
 
@@ -126,20 +161,25 @@ public class BlossomConfigService implements ConfigService {
                     if (StringUtils.equals(EventTypeEnum.REMOVE.getValue(), eventType)) {
                         handleRemoveEvnet(key, publish);
                     } else if (StringUtils.equals(EventTypeEnum.PUBLISH.getValue(), eventType)) {
-                        String newMd5 = MD5Util.toMD5(data);
                         //TODO 比较缓存中的MD5 如果改变
                         //配置发生改变
                         //就需要发生一个变更事件 通知项目修改Environment的值
                         //并且需要对@Value的值进行刷新
                         //TODO 这里需要考虑的是 Client模块是可以不整合SpringBoot的
                         //那么就意味着不能直接使用ApplicationListener/Event了
+                        String newMd5 = MD5Util.toMD5(data);
                         ConfigCache configCache = cacheMap.get(key);
-                        String lastCallMd5 = configCache.getLastCallMd5();
+                        String lastCallMd5 = configCache != null ? configCache.getLastCallMd5() : null;
                         if (!StringUtils.equals(lastCallMd5, newMd5)) {
-                            configCache.setContent(data);
-                            configCache.setLastCallMd5(newMd5);
-                            configCache.setModifyTimestamp(new Date());
-                            handlePublishEvent(key, configCache, publish);
+                            ConfigCache updatedConfigCache =
+                                    ConfigCache
+                                            .builder()
+                                            .content(data)
+                                            .key(key)
+                                            .lastCallMd5(newMd5)
+                                            .modifyTimestamp(new Date())
+                                            .build();
+                            handlePublishEvent(key, updatedConfigCache, publish);
                         }
                     }
                     //这里可能监听到超时了但是还是没有发生变更事件
@@ -154,6 +194,38 @@ public class BlossomConfigService implements ConfigService {
         System.out.println("finish a longpolling and send a longpolling again...");
     }
 
+
+    /**
+     * 处理配置变更事件
+     *
+     * @param key
+     * @param configCache
+     * @param publish
+     */
+    private void handlePublishEvent(String key, ConfigCache configCache, Publish publish) {
+        try {
+            // 将新的配置写入到本地文件
+            // 同步更新本地文件
+            ReadWriteLockUtil.withWriteLock(key, id -> {
+                // 具体的文件写操作
+                try {
+                    FileUtil.writeConfigToFile(key, configCache.getContent());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            // 更新内存中的缓存
+            cacheMap.put(key, configCache);
+            //发布一个配置变更事件
+            //刷新Spring容器上下文
+            publish.publishPublishEvent(key, configCache);
+        } catch (Exception e) {
+            log.error("Error writing config to file: {}", key, e);
+        }
+    }
+
+
     // 如下两个方法必须实现基于自己手写的监听器的方式来同时Core模块完成配置变更
 
     private void handleRemoveEvnet(String key, Publish publish) {
@@ -163,13 +235,6 @@ public class BlossomConfigService implements ConfigService {
         publish.publishRemoveEvent(key);
     }
 
-    private void handlePublishEvent(String key, ConfigCache configCache, Publish publish) {
-        cacheMap.put(key, configCache);
-        //发布一个配置变更事件
-        //刷新Spring容器上下文
-        publish.publishPublishEvent(key, configCache);
-
-    }
 
     @Override
     public Properties getProperties() {

@@ -8,7 +8,6 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/BlossomRegistry-Client/pom.xml" />
         <option value="$PROJECT_DIR$/BlossomRegistry-Core/pom.xml" />
-        <option value="$PROJECT_DIR$/BlossomConfig-Common/pom.xml" />
       </list>
     </option>
   </component>
