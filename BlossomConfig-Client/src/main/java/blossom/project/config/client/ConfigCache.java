@@ -34,5 +34,5 @@ public class ConfigCache {
 
     private String type;
 
-
+    private ConfigReadWriteLock lock;
 }
