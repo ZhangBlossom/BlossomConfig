@@ -11,6 +11,7 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static blossom.project.config.common.constants.BlossomConstants.SEPARATOR;
@@ -66,7 +67,9 @@ public class LongPollingService {
                                  String group, String configId, String content) {
         String key = namespace + SEPARATOR + group + SEPARATOR + configId;
         AsyncContext context = contextsMap.get(key);
-
+        if (Objects.isNull(context)){
+            return;
+        }
         switch (eventTypeEnum){
             case PUBLISH -> {
                 try {

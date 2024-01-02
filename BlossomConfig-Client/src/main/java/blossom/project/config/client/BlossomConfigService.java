@@ -113,60 +113,64 @@ public class BlossomConfigService implements ConfigService {
         String url = buildSubScribeUrl(group, configId);
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
 
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).thenAccept(content -> {
-            System.out.println("Received content: " + content);
-            // 处理收到的内容
-            Result result = JSON.parseObject(content, Result.class);
-            String data = (String) result.getData();
-            String key = namespace + SEPARATOR + group + SEPARATOR + configId;
-            String eventType = result.getExt();
-            //当前是一个配置删除事件
-            if (StringUtils.equals(EventTypeEnum.REMOVE.getValue(),eventType)){
-                handleRemoveEvnet(key, publish);
-                subscribeConfigChangeEvent(group,configId, publish);
-            }else if(StringUtils.equals(EventTypeEnum.PUBLISH.getValue(),eventType)){
-                String newMd5 = MD5Util.toMD5(data);
-                //TODO 比较缓存中的MD5 如果改变
-                ConfigCache configCache = cacheMap.get(key);
-                String lastCallMd5 = configCache.getLastCallMd5();
-                if (!StringUtils.equals(lastCallMd5,newMd5)){
-                    configCache.setContent(data);
-                    configCache.setLastCallMd5(newMd5);
-                    configCache.setModifyTimestamp(new Date());
-                    handlePublishEvent(key,configCache, publish);
-                }
-                //配置发生改变
-                //就需要发生一个变更事件 通知项目修改Environment的值
-                //并且需要对@Value的值进行刷新
-                //TODO 这里需要考虑的是 Client模块是可以不整合SpringBoot的
-                //那么就意味着不能直接使用ApplicationListener/Event了
-                // 立即再次发起长轮询请求
-                subscribeConfigChangeEvent(group, configId, publish);
-            }
-        }).exceptionally(e -> {
-            e.printStackTrace();
-            // 立即再次发起长轮询请求
-            subscribeConfigChangeEvent(group, configId, publish);
-            return null;
-        });
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(content -> {
+                    System.out.println("Received content: " + content);
+                    // 处理收到的内容
+                    Result result = JSON.parseObject(content, Result.class);
+                    String data = (String) result.getData();
+                    String key = namespace + SEPARATOR + group + SEPARATOR + configId;
+                    String eventType = result.getExt();
+                    //当前是一个配置删除事件
+                    if (StringUtils.equals(EventTypeEnum.REMOVE.getValue(), eventType)) {
+                        handleRemoveEvnet(key, publish);
+                    } else if (StringUtils.equals(EventTypeEnum.PUBLISH.getValue(), eventType)) {
+                        String newMd5 = MD5Util.toMD5(data);
+                        //TODO 比较缓存中的MD5 如果改变
+                        //配置发生改变
+                        //就需要发生一个变更事件 通知项目修改Environment的值
+                        //并且需要对@Value的值进行刷新
+                        //TODO 这里需要考虑的是 Client模块是可以不整合SpringBoot的
+                        //那么就意味着不能直接使用ApplicationListener/Event了
+                        ConfigCache configCache = cacheMap.get(key);
+                        String lastCallMd5 = configCache.getLastCallMd5();
+                        if (!StringUtils.equals(lastCallMd5, newMd5)) {
+                            configCache.setContent(data);
+                            configCache.setLastCallMd5(newMd5);
+                            configCache.setModifyTimestamp(new Date());
+                            handlePublishEvent(key, configCache, publish);
+                        }
+                    }
+                    //这里可能监听到超时了但是还是没有发生变更事件
+                    // 最后依旧需要立即再次发起长轮询请求
+                    subscribeConfigChangeEvent(group, configId, publish);
+                }).exceptionally(e -> {
+                    e.printStackTrace();
+                    // 立即再次发起长轮询请求
+                    subscribeConfigChangeEvent(group, configId, publish);
+                    return null;
+                });
+        System.out.println("finish a longpolling and send a longpolling again...");
     }
 
     // 如下两个方法必须实现基于自己手写的监听器的方式来同时Core模块完成配置变更
 
-    private void handleRemoveEvnet(String key, Publish publish){
+    private void handleRemoveEvnet(String key, Publish publish) {
         cacheMap.remove(key);
         //发布一个配置变更事件
         //刷新Spring容器上下文
         publish.publishRemoveEvent(key);
     }
 
-    private void handlePublishEvent(String key, ConfigCache configCache, Publish publish){
-        cacheMap.put(key,configCache);
+    private void handlePublishEvent(String key, ConfigCache configCache, Publish publish) {
+        cacheMap.put(key, configCache);
         //发布一个配置变更事件
         //刷新Spring容器上下文
-        publish.publishPublishEvent(key,configCache);
+        publish.publishPublishEvent(key, configCache);
 
     }
+
     @Override
     public Properties getProperties() {
         return this.properties;

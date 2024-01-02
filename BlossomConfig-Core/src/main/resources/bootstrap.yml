@@ -27,12 +27,3 @@ spring:
           group: DEFAULT
         - config-id: another-config.yaml
           group: PROD
-
-#
-    nacos:
-      config:
-        file-extension: yaml
-        shared-configs:
-          shared-configs[0]:
-            data-id: towelove-mysql-dev.yaml
-            refresh: true
