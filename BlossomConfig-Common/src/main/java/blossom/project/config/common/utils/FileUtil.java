@@ -39,11 +39,28 @@ public class FileUtil {
      * @throws IOException
      */
     public static String readConfigFromFile(String key) throws IOException {
+        // 构建配置文件的完整路径
         String configFilePath = OSUtil.getConfigFilePath() + File.separator + key.replace(SEPARATOR, "_") + ".txt";
         File configFile = new File(configFilePath);
-        if (!configFile.exists()) {
-            throw new FileNotFoundException("Config file not found: " + configFilePath);
+
+        // 确保父目录存在
+        File parentDir = configFile.getParentFile();
+        if (!parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new IOException("Failed to create directory: " + parentDir.getAbsolutePath());
+            }
         }
+
+        // 如果文件不存在，则创建新文件
+        if (!configFile.exists()) {
+            if (!configFile.createNewFile()) {
+                throw new IOException("Failed to create new file: " + configFilePath);
+            }
+            // 如果文件是新创建的，返回空内容
+            return "";
+        }
+
+        // 读取文件内容
         StringBuilder contentBuilder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
             String line;
@@ -55,5 +72,6 @@ public class FileUtil {
         }
         return contentBuilder.toString();
     }
+
 
 }

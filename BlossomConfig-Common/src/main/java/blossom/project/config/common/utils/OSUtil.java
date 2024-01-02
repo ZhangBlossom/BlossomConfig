@@ -9,7 +9,7 @@ import java.io.File;
  */
 public class OSUtil {
 
-    private static final String CONFIG_DIRECTORY_NAME = "/blossomConfigCache";
+    private static final String CONFIG_DIRECTORY_NAME = "blossomConfigCache";
 
     /**
      * 获取配置文件的存储路径
@@ -19,10 +19,10 @@ public class OSUtil {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
             // Windows系统
-            return "C:\\blossomConfig" + CONFIG_DIRECTORY_NAME;
+            return "C:\\blossomConfig" +  File.separator + CONFIG_DIRECTORY_NAME;
         } else {
             // Linux或其他类Unix系统
-            return "/etc" + CONFIG_DIRECTORY_NAME;
+            return "/etc" +  File.separator+ CONFIG_DIRECTORY_NAME;
         }
     }
 

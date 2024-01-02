@@ -98,6 +98,7 @@ public class BlossomConfigService implements ConfigService {
             try {
                 return FileUtil.readConfigFromFile(key);
             } catch (IOException e) {
+                log.error("read local config file erroe...,Exception:{}",e);
                 throw new RuntimeException(e);
             }
         });
