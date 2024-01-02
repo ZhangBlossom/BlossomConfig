@@ -1,0 +1,16 @@
+# declare the Application Listeners
+#org.springframework.context.ApplicationListener=\
+#blossom.project.config.core.publish.BootstrapApplicationListener
+
+# declare the PropertySourceLocator,but it will not load the impl class
+#org.springframework.cloud.bootstrap.config.PropertySourceLocator=\
+#blossom.project.config.core.JsonFilePropertySourceLocator
+
+# declare the class should be load at the initial time
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+blossom.project.config.core.BlossomConfigBootstrapConfiguration
+
+# declare a file format parser
+org.springframework.boot.env.PropertySourceLoader=\
+blossom.project.config.core.BlossomJsonPropertySourceLoader
+

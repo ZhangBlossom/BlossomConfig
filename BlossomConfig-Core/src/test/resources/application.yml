@@ -1,0 +1,6 @@
+name: 123
+
+spring:
+  redis:
+    host: localhost
+    port: 6379

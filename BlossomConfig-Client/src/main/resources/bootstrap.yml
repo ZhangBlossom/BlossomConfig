@@ -1,0 +1,9 @@
+server:
+  port: 9999
+
+spring:
+  cloud:
+    blossom:
+      config:
+        cluster-name: 123
+        username:

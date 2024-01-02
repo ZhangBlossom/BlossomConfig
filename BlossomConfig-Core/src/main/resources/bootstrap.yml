@@ -1,0 +1,38 @@
+# Tomcat
+server:
+  port: 8888
+
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: blossom-core
+  profiles:
+    # 环境配置
+    active: dev
+  cloud:
+    blossom:
+      config:
+        server-addr: localhost:9999
+        username: blossom
+        password: blossom
+        max-retry: 3
+        config-long-poll-timeout: 5000
+        config-retry-time: 3
+        cluster-name: Blossom
+        group: DEFAULT
+        namespace: config
+        config-lists:
+        - config-id: towelove-mysql-dev.yaml
+          group: DEFAULT
+        - config-id: another-config.yaml
+          group: PROD
+
+#
+    nacos:
+      config:
+        file-extension: yaml
+        shared-configs:
+          shared-configs[0]:
+            data-id: towelove-mysql-dev.yaml
+            refresh: true

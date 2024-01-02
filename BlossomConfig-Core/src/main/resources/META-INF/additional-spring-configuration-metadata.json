@@ -1,0 +1,92 @@
+{
+  "groups": [
+    {
+      "name": "spring.cloud.blossom",
+      "type": "blossom.project.config.core.BlossomConfigProperties",
+      "sourceType": "blossom.project.config.core.BlossomConfigProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "spring.cloud.blossom.config.config-id",
+      "type": "java.lang.String",
+      "description": "Direct project configuration ID for the current project."
+    },
+    {
+      "name": "spring.cloud.blossom.config.server-addr",
+      "type": "java.lang.String",
+      "defaultValue": "127.0.0.1:9999",
+      "description": "Server address of the configuration center in the format 'localhost:9999'."
+    },
+    {
+      "name": "spring.cloud.blossom.config.username",
+      "type": "java.lang.String",
+      "description": "Username for access authentication to the configuration center."
+    },
+    {
+      "name": "spring.cloud.blossom.config.password",
+      "type": "java.lang.String",
+      "description": "Password for access authentication to the configuration center."
+    },
+    {
+      "name": "spring.cloud.blossom.config.group",
+      "type": "java.lang.String",
+      "defaultValue": "DEFAULT_GROUP",
+      "description": "Configuration group, default is 'DEFAULT_GROUP'."
+    },
+    {
+      "name": "spring.cloud.blossom.config.namespace",
+      "type": "java.lang.String",
+      "defaultValue": "DEFAULT",
+      "description": "Namespace of the configuration center, default is 'DEFAULT'."
+    },
+    {
+      "name": "spring.cloud.blossom.config.file-extension",
+      "type": "java.lang.String",
+      "defaultValue": "yml",
+      "description": "File extension of the configuration files, default is 'yml'."
+    },
+    {
+      "name": "spring.cloud.blossom.config.timeout",
+      "type": "java.lang.Integer",
+      "defaultValue": 5000,
+      "description": "Timeout in milliseconds for fetching configurations from the center, default is 5000 ms."
+    },
+    {
+      "name": "spring.cloud.blossom.config.max-retry",
+      "type": "java.lang.Integer",
+      "defaultValue": 3,
+      "description": "Maximum number of retries for fetching configurations."
+    },
+    {
+      "name": "spring.cloud.blossom.config.config-long-poll-timeout",
+      "type": "java.lang.Integer",
+      "defaultValue": 5000,
+      "description": "Long polling timeout in milliseconds."
+    },
+    {
+      "name": "spring.cloud.blossom.config.config-retry-time",
+      "type": "java.lang.Integer",
+      "defaultValue": 5000,
+      "description": "Interval time in milliseconds for retrying configuration fetch."
+    },
+    {
+      "name": "spring.cloud.blossom.config.cluster-name",
+      "type": "java.lang.String",
+      "defaultValue": "Blossom",
+      "description": "Name of the cluster."
+    },
+    {
+      "name": "spring.cloud.blossom.config.cluster-node-name",
+      "type": "java.lang.String",
+      "defaultValue": "Declared by Host",
+      "description": "Name of the cluster node. please do not overload the cluster, or ensure that the cluster node name is unique"
+    },
+    {
+      "name": "spring.cloud.blossom.config.refresh-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Flag to enable configuration refresh, default is true."
+    }
+  ]
+}

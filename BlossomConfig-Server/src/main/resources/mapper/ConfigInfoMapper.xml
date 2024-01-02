@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blossom.project.config.server.mapper.ConfigMapper">
+    <insert id="publishConfig">
+        insert into config(`config_id`,`namespace`,`group`,`content`,`type`,`md5`)
+            values (#{configId},#{namespace},#{group},#{content},#{type},#{md5})
+    </insert>
+
+    <select id="getConfig" resultType="blossom.project.config.server.entity.Config">
+        select * from config where `config_id` = #{configId} and `namespace` = #{namespace}
+        and `group` = #{group} and `type` = #{type}
+    </select>
+
+    <delete id="removeConfig">
+        delete from config where `config_id` = #{configId} and `namespace` = #{namespace}
+                             and `group` = #{group}
+    </delete>
+
+    <update id="editConfig">
+        update config
+        set `content` = #{content,jdbcType=VARCHAR}
+        where config_id = #{configId} and `group` = #{group} and `namespace` = #{namespace}
+
+    </update>
+</mapper>
+
+
