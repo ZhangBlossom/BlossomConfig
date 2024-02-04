@@ -16,9 +16,10 @@ BlossomConfig配置中心
 ![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/45d85203-efb9-4ab8-8bfe-32d08aecb2d5)
 
 
-WX：qczjhczs0114
-
 添加微信，加入我的知识星球
+
+![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/814f36e6-8086-48ba-b970-09a66183417e)
+
 
 ![image](https://github.com/ZhangBlossom/BlossomGateway/assets/110703773/f668c96d-3222-47e0-883c-2f88cf51d9af)
 
