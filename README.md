@@ -11,5 +11,14 @@ BlossomConfig配置中心
 
 4：基于文件与缓存的方式优化项目性能
 
-WX：15377920718
+当前项目可以作为简历项目
+
+![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/45d85203-efb9-4ab8-8bfe-32d08aecb2d5)
+
+
+WX：qczjhczs0114
+
+添加微信，加入我的知识星球
+
+![image](https://github.com/ZhangBlossom/BlossomGateway/assets/110703773/f668c96d-3222-47e0-883c-2f88cf51d9af)
 
