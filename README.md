@@ -11,6 +11,14 @@ BlossomConfig配置中心
 
 4：基于文件与缓存的方式优化项目性能
 
+show 一下工牌
+
+![200d28d926de56f76d0aa29c0699358](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/c7e7b3b8-beee-4778-b546-7e0bf5c2057c)
+
+![微信图片_20231104161457](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/2279aec4-4334-40c1-9a05-f64ab82c647c)
+
+
+
 当前项目可以作为简历项目
 
 ![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/45d85203-efb9-4ab8-8bfe-32d08aecb2d5)
