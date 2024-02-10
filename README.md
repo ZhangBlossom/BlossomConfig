@@ -24,7 +24,10 @@ show 一下工牌
 ![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/45d85203-efb9-4ab8-8bfe-32d08aecb2d5)
 
 
-添加微信，加入我的知识星球
+添加微信，加入我的知识星球，目前已有近200人
+
+![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/267d56f7-c47e-4ccf-ab3b-b01489073683)
+
 
 ![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/814f36e6-8086-48ba-b970-09a66183417e)
 
