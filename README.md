@@ -29,7 +29,8 @@ show 一下工牌
 ![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/267d56f7-c47e-4ccf-ab3b-b01489073683)
 
 
-![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/814f36e6-8086-48ba-b970-09a66183417e)
+![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/ff041581-f2e2-48a6-bdff-ee3398304011)
+
 
 
 ![image](https://github.com/ZhangBlossom/BlossomGateway/assets/110703773/f668c96d-3222-47e0-883c-2f88cf51d9af)
