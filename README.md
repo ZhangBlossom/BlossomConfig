@@ -11,7 +11,9 @@ BlossomConfig配置中心
 
 4：基于文件与缓存的方式优化项目性能
 
+网关项目：https://github.com/ZhangBlossom/BlossomGateway
 
+RPC项目：https://github.com/ZhangBlossom/BlossomRPC
 
 show一下我们的工牌
 
