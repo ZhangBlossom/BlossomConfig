@@ -11,6 +11,11 @@ BlossomConfig配置中心
 
 4：基于文件与缓存的方式优化项目性能
 
+如下是项目目录：
+
+<img width="306" alt="image" src="https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/90b00b41-1ea2-46cc-960c-a5f4ae41ff16">
+
+
 网关项目：https://github.com/ZhangBlossom/BlossomGateway
 
 RPC项目：https://github.com/ZhangBlossom/BlossomRPC
@@ -39,11 +44,24 @@ show一下我们的工牌
 
 如果有意向加入星球可以联系我们哦。目前星球已有200+人。
 
-星球内容会不断继续完善更新，目前星球内容已达62w字。希望能早日到达内容100w字！    
+星球内容会不断继续完善更新，目前星球内容已达66w字。希望能早日到达内容100w字！    
+
+如下是星球目录：
+
+![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/f2d60fbe-4c60-45e6-8652-8165db844992)
+
+🌍价格：
+
+一周19  三个月59  半年99  一年159  两年259  永久299
+
+非常感谢好朋友的支持，在我emo的时候的安慰。
+
+<img width="607" alt="image" src="https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/aca50ed1-d46f-4349-9a57-97a6e6045398">
+
 
 ![image](https://github.com/ZhangBlossom/BlossomGateway/assets/110703773/fbd12c89-ca55-4efc-b8b7-c6c0dd0061ac)
 
-![image](https://github.com/ZhangBlossom/BlossomGateway/assets/110703773/f668c96d-3222-47e0-883c-2f88cf51d9af)
+![image](https://github.com/ZhangBlossom/BlossomConfig/assets/110703773/f5d98397-0a87-4bac-b24b-a2a4c7c9eae1)
 
 ![image](https://github.com/ZhangBlossom/BlossomGateway/assets/110703773/61c9cfb1-f6fb-4dc1-8d2d-e39ac7546470)
 
